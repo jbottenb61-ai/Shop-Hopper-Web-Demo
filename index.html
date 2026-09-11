@@ -218,6 +218,10 @@
       margin-top: 8px;
     }
 
+    .image-upload-field.desktop-photo-choice .image-upload-options {
+      grid-template-columns: 1fr;
+    }
+
     .image-upload-option {
       min-width: 0;
       min-height: 46px;
@@ -2943,6 +2947,29 @@
     // MODAL
     // ============================================================
 
+    function supportsDirectMobileCamera() {
+      const userAgent =
+        navigator.userAgent ||
+        "";
+
+      const mobileOrTablet =
+        /Android|iPhone|iPad|iPod/i.test(
+          userAgent
+        );
+
+      const iPadDesktopMode =
+        /Macintosh/i.test(
+          userAgent
+        ) &&
+        navigator.maxTouchPoints >
+          1;
+
+      return (
+        mobileOrTablet ||
+        iPadDesktopMode
+      );
+    }
+
     function enhanceModalImageField() {
       const imageUrlInput =
         modalBody.querySelector(
@@ -3078,6 +3105,33 @@
           </p>
         </div>
       `;
+
+      if (
+        !supportsDirectMobileCamera()
+      ) {
+        uploadField.classList.add(
+          "desktop-photo-choice"
+        );
+
+        uploadField
+          .querySelector(
+            'input[name="imageCameraFile"]'
+          )
+          ?.closest(
+            ".image-upload-option"
+          )
+          ?.remove();
+
+        const help =
+          uploadField.querySelector(
+            ".image-upload-help"
+          );
+
+        if (help) {
+          help.textContent =
+            "Choose a saved photo to crop before uploading. The photo takes priority over the Image URL.";
+        }
+      }
 
       imageUrlInput
         .closest(".field")
