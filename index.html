@@ -204,6 +204,34 @@
       background: #148b79;
     }
 
+    .image-upload-field {
+      padding: 12px;
+      border: 1px dashed #a9c8ce;
+      border-radius: 10px;
+      background: #f5fbfc;
+    }
+
+    .image-upload-field input[type="file"] {
+      width: 100%;
+      margin-top: 7px;
+    }
+
+    .image-upload-help {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .image-upload-preview {
+      width: 100%;
+      max-width: 260px;
+      max-height: 190px;
+      margin-top: 10px;
+      border-radius: 9px;
+      object-fit: cover;
+    }
+
     .button-danger {
       color: #c93139;
       background: var(--red-bg);
@@ -2825,6 +2853,122 @@
     // MODAL
     // ============================================================
 
+    function enhanceModalImageField() {
+      const imageUrlInput =
+        modalBody.querySelector(
+          'input[name="image"]'
+        );
+
+      if (
+        !imageUrlInput ||
+        modalBody.querySelector(
+          'input[name="imageFile"]'
+        )
+      ) {
+        return;
+      }
+
+      const uploadField =
+        document.createElement(
+          "div"
+        );
+
+      uploadField.className =
+        "field full image-upload-field";
+
+      uploadField.innerHTML = `
+        <label>
+          Upload or take photo
+          <span class="field-optional">
+            (optional)
+          </span>
+        </label>
+
+        <input
+          name="imageFile"
+          type="file"
+          accept="image/*"
+        />
+
+        <div class="image-upload-help">
+          On a phone, choose Camera or Photo Library.
+          An uploaded photo takes priority over the Image URL.
+        </div>
+
+        <img
+          class="image-upload-preview"
+          alt="Selected item photo preview"
+          hidden
+        />
+      `;
+
+      imageUrlInput
+        .closest(".field")
+        ?.insertAdjacentElement(
+          "afterend",
+          uploadField
+        );
+    }
+
+    modalBody.addEventListener(
+      "change",
+      event => {
+        if (
+          event.target.name !==
+          "imageFile"
+        ) {
+          return;
+        }
+
+        const preview =
+          modalBody.querySelector(
+            ".image-upload-preview"
+          );
+
+        if (!preview) {
+          return;
+        }
+
+        if (
+          modalForm.dataset.imagePreviewUrl
+        ) {
+          URL.revokeObjectURL(
+            modalForm.dataset.imagePreviewUrl
+          );
+        }
+
+        const file =
+          event.target.files?.[0];
+
+        if (!file) {
+          preview.hidden =
+            true;
+
+          preview.removeAttribute(
+            "src"
+          );
+
+          delete modalForm.dataset.imagePreviewUrl;
+
+          return;
+        }
+
+        const previewUrl =
+          URL.createObjectURL(
+            file
+          );
+
+        modalForm.dataset.imagePreviewUrl =
+          previewUrl;
+
+        preview.src =
+          previewUrl;
+
+        preview.hidden =
+          false;
+      }
+    );
+
     function openModal({
       title,
       body,
@@ -2836,6 +2980,8 @@
 
       modalBody.innerHTML =
         body;
+
+      enhanceModalImageField();
 
       modalSubmitHandler =
         onSubmit;
@@ -2883,22 +3029,96 @@
       modalSubmitHandler =
         null;
 
+      if (
+        modalForm.dataset.imagePreviewUrl
+      ) {
+        URL.revokeObjectURL(
+          modalForm.dataset.imagePreviewUrl
+        );
+
+        delete modalForm.dataset.imagePreviewUrl;
+      }
+
       modalForm.reset();
     }
 
     modalForm.addEventListener(
       "submit",
-      event => {
+      async event => {
         event.preventDefault();
 
         if (
-          typeof modalSubmitHandler ===
+          typeof modalSubmitHandler !==
           "function"
         ) {
-          modalSubmitHandler(
-            modalForm
-          );
+          return;
         }
+
+        const imageFile =
+          modalForm.querySelector(
+            'input[name="imageFile"]'
+          )?.files?.[0];
+
+        const imageUrlInput =
+          modalForm.querySelector(
+            'input[name="image"]'
+          );
+
+        if (imageFile) {
+          if (
+            typeof window.shopHopperUploadImage !==
+            "function"
+          ) {
+            alert(
+              "Photo uploading is not ready yet. Please wait a moment and try again."
+            );
+
+            return;
+          }
+
+          const previousLabel =
+            modalSubmit.textContent;
+
+          modalSubmit.disabled =
+            true;
+
+          modalSubmit.textContent =
+            "Uploading photo…";
+
+          try {
+            const publicUrl =
+              await window.shopHopperUploadImage(
+                imageFile
+              );
+
+            if (imageUrlInput) {
+              imageUrlInput.value =
+                publicUrl;
+            }
+          } catch (error) {
+            console.error(
+              "Item photo upload failed.",
+              error
+            );
+
+            alert(
+              error.message ||
+              "The photo could not be uploaded."
+            );
+
+            return;
+          } finally {
+            modalSubmit.disabled =
+              false;
+
+            modalSubmit.textContent =
+              previousLabel;
+          }
+        }
+
+        await modalSubmitHandler(
+          modalForm
+        );
       }
     );
 
@@ -17190,6 +17410,226 @@ if (
     SHOP_HOPPER_SUPABASE_URL,
     SHOP_HOPPER_SUPABASE_KEY
   );
+
+  async function loadPhotoSource(file) {
+    if (
+      typeof createImageBitmap ===
+      "function"
+    ) {
+      return createImageBitmap(
+        file
+      );
+    }
+
+    const objectUrl =
+      URL.createObjectURL(
+        file
+      );
+
+    try {
+      const image =
+        new Image();
+
+      image.src =
+        objectUrl;
+
+      await image.decode();
+
+      return image;
+    } finally {
+      URL.revokeObjectURL(
+        objectUrl
+      );
+    }
+  }
+
+  async function prepareItemPhoto(file) {
+    if (
+      !file?.type?.startsWith(
+        "image/"
+      )
+    ) {
+      throw new Error(
+        "Please choose an image file."
+      );
+    }
+
+    if (
+      file.size >
+      25 * 1024 * 1024
+    ) {
+      throw new Error(
+        "That photo is larger than 25 MB. Please choose a smaller image."
+      );
+    }
+
+    const source =
+      await loadPhotoSource(
+        file
+      );
+
+    const sourceWidth =
+      source.naturalWidth ||
+      source.width;
+
+    const sourceHeight =
+      source.naturalHeight ||
+      source.height;
+
+    const maxDimension =
+      1800;
+
+    const scale =
+      Math.min(
+        1,
+        maxDimension /
+          Math.max(
+            sourceWidth,
+            sourceHeight
+          )
+      );
+
+    const canvas =
+      document.createElement(
+        "canvas"
+      );
+
+    canvas.width =
+      Math.max(
+        1,
+        Math.round(
+          sourceWidth *
+          scale
+        )
+      );
+
+    canvas.height =
+      Math.max(
+        1,
+        Math.round(
+          sourceHeight *
+          scale
+        )
+      );
+
+    canvas
+      .getContext(
+        "2d"
+      )
+      .drawImage(
+        source,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+    source.close?.();
+
+    const blob =
+      await new Promise(
+        resolve =>
+          canvas.toBlob(
+            resolve,
+            "image/jpeg",
+            0.84
+          )
+      );
+
+    if (!blob) {
+      throw new Error(
+        "The selected photo could not be prepared."
+      );
+    }
+
+    if (
+      blob.size >
+      6 * 1024 * 1024
+    ) {
+      throw new Error(
+        "The prepared photo is still too large to upload."
+      );
+    }
+
+    return blob;
+  }
+
+  window.shopHopperUploadImage =
+    async function uploadItemPhoto(
+      file
+    ) {
+      if (!cloudCanEdit) {
+        throw new Error(
+          "Sign in as an approved editor before uploading a photo."
+        );
+      }
+
+      const {
+        data: {
+          session
+        }
+      } =
+        await cloudClient.auth.getSession();
+
+      if (!session) {
+        throw new Error(
+          "Your editor session has expired. Please sign in again."
+        );
+      }
+
+      const photo =
+        await prepareItemPhoto(
+          file
+        );
+
+      const path =
+        `${session.user.id}/${Date.now()}-${crypto.randomUUID()}.jpg`;
+
+      const {
+        error
+      } =
+        await cloudClient.storage
+          .from(
+            "item-photos"
+          )
+          .upload(
+            path,
+            photo,
+            {
+              cacheControl:
+                "3600",
+
+              contentType:
+                "image/jpeg",
+
+              upsert:
+                false
+            }
+          );
+
+      if (error) {
+        throw error;
+      }
+
+      const {
+        data
+      } =
+        cloudClient.storage
+          .from(
+            "item-photos"
+          )
+          .getPublicUrl(
+            path
+          );
+
+      if (!data?.publicUrl) {
+        throw new Error(
+          "The uploaded photo URL could not be created."
+        );
+      }
+
+      return data.publicUrl;
+    };
 
   let cloudReady = false;
   let cloudCanEdit = false;
