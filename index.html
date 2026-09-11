@@ -211,11 +211,6 @@
       background: #f5fbfc;
     }
 
-    .image-upload-field input[type="file"] {
-      width: 100%;
-      margin-top: 7px;
-    }
-
     .image-upload-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -225,16 +220,52 @@
 
     .image-upload-option {
       min-width: 0;
-      padding: 10px;
+      min-height: 46px;
+      padding: 10px 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       border: 1px solid #cbdade;
       border-radius: 9px;
+
+      color: var(--teal);
       background: white;
+
+      cursor: pointer;
+    }
+
+    .image-upload-option:hover {
+      background: #e8f4f6;
+    }
+
+    .image-upload-option:focus-within {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(45, 77, 89, 0.10);
     }
 
     .image-upload-option strong {
-      display: block;
-      color: var(--teal);
       font-size: 12px;
+      text-align: center;
+    }
+
+    .image-upload-option input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .image-upload-status {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     @media (max-width: 600px) {
@@ -2970,6 +3001,13 @@
           </label>
         </div>
 
+        <div
+          class="image-upload-status"
+          aria-live="polite"
+        >
+          No photo selected
+        </div>
+
         <div class="image-upload-help">
           Take Photo opens the rear camera on supported phones.
           Either choice takes priority over the Image URL.
@@ -3023,6 +3061,31 @@
 
         const file =
           event.target.files?.[0];
+
+        const otherFileInput =
+          modalBody.querySelector(
+            event.target.name ===
+              "imageCameraFile"
+              ? 'input[name="imageLibraryFile"]'
+              : 'input[name="imageCameraFile"]'
+          );
+
+        if (file && otherFileInput) {
+          otherFileInput.value =
+            "";
+        }
+
+        const status =
+          modalBody.querySelector(
+            ".image-upload-status"
+          );
+
+        if (status) {
+          status.textContent =
+            file
+              ? `Selected: ${file.name || "Photo"}`
+              : "No photo selected";
+        }
 
         if (!file) {
           preview.hidden =
