@@ -15831,227 +15831,52 @@ if (
   function openPrototypeHelp() {
     openModal({
       title:
-        "Shop Hopper Prototype Help",
+        "Shop Hopper Help",
 
       submitLabel:
         null,
 
       body: `
         <div class="prototype-help-intro">
-          Welcome to the Shop Hopper prototype.
-          Use the <strong>Prototype Persona</strong>
-          menu at the top of the screen to explore
-          Shop Hopper from different points of view.
-          Your changes save automatically in this browser.
+          Shop Hopper uses one shared catalog. Anyone can browse the
+          current merchants, stores, items, Hoppers and curated lists.
+          Use the <strong>Prototype Persona</strong> menu to explore
+          the Shopper, Hopper, Merchant and Admin views.
         </div>
 
         <div class="prototype-help-grid">
-
           <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-house"></i>
-              </span>
-              Shopper
-            </h3>
-
-            <p>
-              Browse local products, search categories,
-              open item details, explore marketplaces,
-              use the map, view messages and visit the
-              shopper profile.
-            </p>
+            <h3><span class="prototype-help-icon"><i class="fa-solid fa-eye"></i></span>Viewing shared data</h3>
+            <p>Anonymous visitors are read-only. Shared updates appear automatically in other open copies of the app through realtime sync.</p>
           </section>
 
           <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-person-running"></i>
-              </span>
-              Hopper
-            </h3>
-
-            <p>
-              Hoppers are local curators. Each Hopper has
-              their own interests and independent favorites
-              list. Different Hoppers can favorite the same
-              Shop Hopper product.
-            </p>
+            <h3><span class="prototype-help-icon"><i class="fa-solid fa-user-check"></i></span>Approved editors</h3>
+            <p>Select <strong>Team sign in</strong> and use an approved team email. Editors can create, update and delete shared merchants, stores, items, Hoppers, lists and picks.</p>
           </section>
 
           <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-circle-plus"></i>
-              </span>
-              Add a Hopper
-            </h3>
-
-            <p>
-              Click <strong>+ Hopper Persona</strong> to
-              create a new local personality such as
-              The Skater, The Foodie or The Dog Owner.
-              Give them an avatar, location, interests
-              and curated-list title.
-            </p>
+            <h3><span class="prototype-help-icon"><i class="fa-solid fa-person-running"></i></span>Hoppers &amp; local finds</h3>
+            <p>Each Hopper has an independent curated list. Search the shared catalog before creating a new local find; multiple Hoppers may recommend the same item.</p>
           </section>
 
           <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-star"></i>
-              </span>
-              Add Local Finds
-            </h3>
-
-            <p>
-              A Hopper can search existing Shop Hopper
-              inventory and add a product to their own
-              list, or choose
-              <strong>Create New Local Find</strong>
-              when something is not in the catalog yet.
-            </p>
+            <h3><span class="prototype-help-icon"><i class="fa-solid fa-store"></i></span>Shopper &amp; Merchant views</h3>
+            <p>Browse products and maps as a Shopper, or select a Merchant persona to review stores, inventory, storefront previews and publishing controls.</p>
           </section>
 
-          <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-store"></i>
-              </span>
-              Merchant
-            </h3>
-
-            <p>
-              Choose a Merchant persona to experience the
-              merchant side of Shop Hopper. Merchants can
-              work with stores and inventory, add items,
-              preview the storefront and manage what is
-              active or published.
-            </p>
+          <section class="prototype-help-card prototype-help-card-wide">
+            <h3><span class="prototype-help-icon"><i class="fa-solid fa-floppy-disk"></i></span>Export, Import &amp; offline use</h3>
+            <p><strong>Export Data</strong> downloads a backup. <strong>Import Data</strong> is available only to approved editors and reconciles the shared database. Browser storage is an offline/cache fallback, not a separate source of truth.</p>
           </section>
-
-          <section class="prototype-help-card">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-user-gear"></i>
-              </span>
-              Demo Admin
-            </h3>
-
-            <p>
-              Demo Admin provides an additional prototype
-              perspective for managing and reviewing the
-              demonstration environment.
-            </p>
-          </section>
-
-          <section class="
-            prototype-help-card
-            prototype-help-card-wide
-          ">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-floppy-disk"></i>
-              </span>
-              Export &amp; Import Data
-            </h3>
-
-            <p>
-              <strong>Export Data</strong> downloads a
-              backup of the current prototype data.
-              <strong>Import Data</strong> restores a
-              previously exported Shop Hopper data file.
-              Export is also a convenient way to share
-              an experiment with another team member.
-            </p>
-          </section>
-
-          <section class="
-            prototype-help-card
-            prototype-help-card-wide
-          ">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-rotate-left"></i>
-              </span>
-              Reset
-            </h3>
-
-            <p>
-              Reset returns the prototype to its seeded
-              demonstration data. If you created anything
-              you may want to keep, use
-              <strong>Export Data before Reset</strong>.
-            </p>
-          </section>
-
-          <section class="
-            prototype-help-card
-            prototype-help-card-wide
-          ">
-            <h3>
-              <span class="prototype-help-icon">
-                <i class="fa-solid fa-stopwatch"></i>
-              </span>
-              Try This First
-            </h3>
-
-            <ol class="prototype-help-steps">
-              <li>
-                Explore the prototype as
-                <strong>Shopper</strong>.
-              </li>
-
-              <li>
-                Switch to
-                <strong>Hopper — The Surfer</strong>
-                and explore the curated list.
-              </li>
-
-              <li>
-                Click
-                <strong>+ Hopper Persona</strong>
-                and create your own Hopper.
-              </li>
-
-              <li>
-                Use
-                <strong>+ Add Local Find</strong>
-                to add an existing item or create
-                something new.
-              </li>
-
-              <li>
-                Switch to a
-                <strong>Merchant</strong>
-                persona and explore the Merchant Portal.
-              </li>
-
-              <li>
-                Click
-                <strong>Export Data</strong>
-                if you want to save or share what
-                you created.
-              </li>
-            </ol>
-          </section>
-
         </div>
 
         <div class="prototype-help-tip">
-          <strong>Tip:</strong>
-          This is an experimentation environment.
-          Try things, create personas, add products
-          and explore different Shop Hopper workflows.
+          <strong>Good to know:</strong> The status at the top always shows whether you are viewing shared data or signed in as an editor.
         </div>
 
         <div class="prototype-help-warning">
-          <strong>Prototype data:</strong>
-          Changes are saved in the browser you are using.
-          Another computer or browser will have its own
-          separate prototype data unless you transfer it
-          with Export / Import. Avoid entering sensitive
-          or private customer information.
+          <strong>Shared environment:</strong> Changes made by approved editors are visible to everyone using the app. Avoid entering sensitive or private customer information.
         </div>
       `
     });
@@ -16895,6 +16720,163 @@ if (
 }
 </style>
 
+
+<!-- ============================================================
+     SHOP HOPPER — SHARED APP USABILITY PASS
+     ============================================================ -->
+<style>
+  .demo-bar {
+    display: grid;
+    grid-template-columns: minmax(320px, 1fr) auto;
+    gap: 10px 16px;
+    padding: 8px 14px;
+  }
+
+  .demo-primary-tools,
+  .demo-auth-tools {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .demo-primary-tools .persona-select {
+    flex: 1 1 300px;
+    width: auto;
+    max-width: 520px;
+  }
+
+  .demo-auth-tools {
+    justify-content: flex-end;
+  }
+
+  .demo-tools-menu {
+    position: relative;
+  }
+
+  .demo-tools-menu > summary {
+    min-height: 34px;
+    padding: 8px 11px;
+    border: 1px solid #526368;
+    border-radius: 8px;
+    color: white;
+    background: #273235;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 800;
+    list-style: none;
+    white-space: nowrap;
+  }
+
+  .demo-tools-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .demo-tools-menu[open] > summary {
+    background: #354449;
+  }
+
+  .demo-tools-panel {
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    min-width: 190px;
+    padding: 8px;
+    border: 1px solid #526368;
+    border-radius: 10px;
+    background: #11191a;
+    box-shadow: 0 12px 30px rgba(0,0,0,.28);
+    z-index: 1000;
+  }
+
+  .demo-tools-panel .demo-data-tools {
+    display: grid;
+  }
+
+  .demo-tools-panel .demo-data-button,
+  .demo-tools-panel .add-hopper-persona-button {
+    width: 100%;
+  }
+
+  .read-only-notice {
+    padding: 9px 16px;
+    border-bottom: 1px solid #b9dce3;
+    color: #174d58;
+    background: #e8f7fa;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .read-only-notice[hidden],
+  [data-editor-only][hidden] {
+    display: none !important;
+  }
+
+  @media (min-width: 1000px) {
+    #shopperResults .product-grid {
+      max-width: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hopper-main,
+    .hopper-content,
+    .hopper-workspace,
+    .hopper-profile-layout {
+      max-width: 1240px;
+    }
+  }
+
+  @media (min-width: 1320px) {
+    #shopperResults .product-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .demo-bar {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 7px !important;
+    }
+
+    .demo-primary-tools,
+    .demo-auth-tools {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .demo-primary-tools .demo-label,
+    .demo-primary-tools .persona-select {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+
+    .demo-primary-tools .prototype-help-button,
+    .demo-primary-tools .demo-tools-menu {
+      flex: 1 1 calc(50% - 4px);
+    }
+
+    .demo-tools-menu > summary {
+      text-align: center;
+    }
+
+    .demo-tools-panel {
+      left: 0;
+      right: auto;
+    }
+
+    .demo-auth-tools {
+      justify-content: space-between;
+    }
+
+    .read-only-notice {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+  }
+</style>
+
 <!-- Supabase client: pinned for repeatable builds. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
 
@@ -16989,6 +16971,127 @@ if (
     status.querySelector("span:last-child").textContent = message;
   }
 
+  const EDITOR_ONLY_SELECTOR = [
+    '[data-persona-builder="add"]',
+    '[data-hopper-manage="edit"]',
+    '[data-hopper-manage="delete"]',
+    '[data-hopper-nav="add"]',
+    '[data-action="hopper-add-local-find"]',
+    '[data-hopper-catalog-action="add"]',
+    '[data-hopper-catalog-action="create"]',
+    '[data-action="add-merchant"]',
+    '[data-action="reset-demo"]',
+    '[data-action="add-store"]',
+    '[data-action="edit-store"]',
+    '[data-action="toggle-store-publish"]',
+    '[data-action="add-item"]',
+    '[data-action="bulk-import"]',
+    '[data-action="edit-item"]',
+    '[data-action="toggle-item"]',
+    '[data-action="delete-item"]',
+    '[data-demo-data-action="import"]'
+  ].join(',');
+
+  const ACTION_LABELS = {
+    "shopper-filter": "Filter products",
+    "refresh-shopper": "Refresh products",
+    "refresh-merchant": "Refresh merchant data",
+    "merchant-exit": "Back to merchant list",
+    "edit-store": "Edit store",
+    "toggle-store-publish": "Change store publishing status",
+    "edit-item": "Edit item",
+    "toggle-item": "Change item publishing status",
+    "delete-item": "Delete item",
+    "hopper-open-item": "Open item details",
+    "map-view-item": "Open map item"
+  };
+
+  function improveAccessibleNames(root = document) {
+    root.querySelectorAll("i").forEach(icon => icon.setAttribute("aria-hidden", "true"));
+
+    root.querySelectorAll("button, [role=button]").forEach(control => {
+      if (control.getAttribute("aria-label")) return;
+      const action = control.dataset?.action;
+      const label = ACTION_LABELS[action] || control.title || control.textContent.trim();
+      if (label) control.setAttribute("aria-label", label);
+    });
+
+    root.querySelectorAll(".leaflet-marker-icon:not([aria-label])").forEach(marker => {
+      marker.setAttribute("aria-label", marker.title || "Map location");
+    });
+  }
+
+  function organizeDemoBar() {
+    const bar = document.querySelector(".demo-bar");
+    if (!bar || bar.dataset.organized === "true") return;
+
+    const label = bar.querySelector(".demo-label");
+    const select = document.getElementById("personaSelect");
+    const help = bar.querySelector(".prototype-help-button");
+    const persona = bar.querySelector(".add-hopper-persona-button");
+    const dataTools = document.getElementById("demoDataTools");
+    const status = document.getElementById("cloudStatus");
+    const auth = document.getElementById("cloudAuthButton");
+
+    const primary = document.createElement("div");
+    primary.className = "demo-primary-tools";
+    [label, select, help].forEach(node => node && primary.appendChild(node));
+
+    const menu = document.createElement("details");
+    menu.className = "demo-tools-menu";
+    const summary = document.createElement("summary");
+    summary.textContent = "Tools";
+    summary.setAttribute("aria-label", "Open Shop Hopper tools");
+    const panel = document.createElement("div");
+    panel.className = "demo-tools-panel";
+    [persona, dataTools].forEach(node => node && panel.appendChild(node));
+    menu.append(summary, panel);
+    primary.appendChild(menu);
+
+    const authTools = document.createElement("div");
+    authTools.className = "demo-auth-tools";
+    [status, auth].forEach(node => node && authTools.appendChild(node));
+
+    bar.replaceChildren(primary, authTools);
+    bar.dataset.organized = "true";
+  }
+
+  function applyEditorUI() {
+    document.querySelectorAll(EDITOR_ONLY_SELECTOR).forEach(control => {
+      control.dataset.editorOnly = "true";
+      control.hidden = !cloudCanEdit;
+      control.setAttribute("aria-hidden", String(!cloudCanEdit));
+    });
+
+    let notice = document.getElementById("readOnlyNotice");
+    if (!notice) {
+      notice = document.createElement("div");
+      notice.id = "readOnlyNotice";
+      notice.className = "read-only-notice";
+      notice.setAttribute("role", "status");
+      notice.textContent = "Viewing shared Shop Hopper data — sign in as an approved team member to make changes.";
+      document.querySelector(".demo-bar")?.insertAdjacentElement("afterend", notice);
+    }
+    notice.hidden = cloudCanEdit;
+    improveAccessibleNames();
+  }
+
+  function installEditorAwareRendering() {
+    const originalRenderAll = renderAll;
+    renderAll = function renderAllWithEditorState() {
+      originalRenderAll();
+      applyEditorUI();
+    };
+
+    document.addEventListener("click", event => {
+      const control = event.target.closest(EDITOR_ONLY_SELECTOR);
+      if (!control || cloudCanEdit) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setCloudStatus("Sign in to make changes", "error");
+    }, true);
+  }
+
   function installCloudControls() {
     const bar = document.querySelector(".demo-bar");
     if (!bar || document.getElementById("cloudStatus")) return;
@@ -17006,6 +17109,8 @@ if (
     auth.addEventListener("click", handleAuthClick);
 
     bar.append(status, auth);
+    organizeDemoBar();
+    improveAccessibleNames(bar);
   }
 
   async function refreshEditorStatus() {
@@ -17015,6 +17120,7 @@ if (
     if (!session) {
       cloudCanEdit = false;
       if (button) button.textContent = "Team sign in";
+      applyEditorUI();
       return;
     }
 
@@ -17026,6 +17132,7 @@ if (
 
     cloudCanEdit = !error && Boolean(data);
     if (button) button.textContent = cloudCanEdit ? "Editor signed in" : "Sign out";
+    applyEditorUI();
   }
 
   async function handleAuthClick() {
@@ -17036,6 +17143,7 @@ if (
       cloudCanEdit = false;
       document.getElementById("cloudAuthButton").textContent = "Team sign in";
       setCloudStatus("Shared data · view only", "connected");
+      applyEditorUI();
       return;
     }
 
@@ -17252,6 +17360,8 @@ if (
 
   async function initializeCloud() {
     installCloudControls();
+    installEditorAwareRendering();
+    applyEditorUI();
     await refreshEditorStatus();
     await loadCloudState();
     subscribeToCloudChanges();
