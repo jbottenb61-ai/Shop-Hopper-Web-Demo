@@ -3041,6 +3041,23 @@
       );
 
       requestAnimationFrame(() => {
+        const usesOnScreenKeyboard =
+          window.matchMedia(
+            "(max-width: 760px), (pointer: coarse)"
+          ).matches;
+
+        if (usesOnScreenKeyboard) {
+          /*
+           * Keep the mobile keyboard closed until the user
+           * deliberately taps a field.
+           */
+          modalClose.focus({
+            preventScroll: true
+          });
+
+          return;
+        }
+
         modalBody
           .querySelector(
             "input, select, textarea"
