@@ -6255,6 +6255,19 @@ Surf Wax,4.99,seasonal,25"
     gap: 10px;
   }
 
+  .field-optional {
+    color: var(--muted);
+    font-size: 0.85em;
+    font-weight: 600;
+  }
+
+  .coordinate-help {
+    margin-top: -4px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
   .hopper-pick-card.hopper-pick-card-clickable {
     grid-template-columns: 66px minmax(0, 1fr);
     cursor: pointer;
@@ -7228,6 +7241,124 @@ Surf Wax,4.99,seasonal,25"
        HOPPER ADD LOCAL FIND
        ============================================================ */
 
+    async function geocodeStoreAddress(
+      address,
+      marketplaceSlug
+    ) {
+      const marketplace =
+        MARKETPLACES.find(
+          candidate =>
+            candidate.slug ===
+            marketplaceSlug
+        );
+
+      const hasCityOrState =
+        /,|\b(?:CA|California)\b/i.test(
+          address
+        );
+
+      const query =
+        hasCityOrState
+          ? address
+          : [
+              address,
+              marketplace?.name,
+              "San Diego County",
+              "California"
+            ]
+              .filter(Boolean)
+              .join(", ");
+
+      const url =
+        new URL(
+          "https://nominatim.openstreetmap.org/search"
+        );
+
+      url.searchParams.set(
+        "q",
+        query
+      );
+
+      url.searchParams.set(
+        "format",
+        "jsonv2"
+      );
+
+      url.searchParams.set(
+        "limit",
+        "1"
+      );
+
+      url.searchParams.set(
+        "countrycodes",
+        "us"
+      );
+
+      const controller =
+        new AbortController();
+
+      const timeout =
+        window.setTimeout(
+          () =>
+            controller.abort(),
+          8000
+        );
+
+      try {
+        const response =
+          await fetch(
+            url,
+            {
+              headers: {
+                Accept:
+                  "application/json"
+              },
+
+              signal:
+                controller.signal
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            "Address lookup is unavailable."
+          );
+        }
+
+        const results =
+          await response.json();
+
+        const match =
+          results?.[0];
+
+        const lat =
+          Number(
+            match?.lat
+          );
+
+        const lng =
+          Number(
+            match?.lon
+          );
+
+        if (
+          !Number.isFinite(lat) ||
+          !Number.isFinite(lng)
+        ) {
+          return null;
+        }
+
+        return {
+          lat,
+          lng
+        };
+      } finally {
+        window.clearTimeout(
+          timeout
+        );
+      }
+    }
+
     function openHopperLocalFindExtension(
       entry = null
     ) {
@@ -7285,14 +7416,6 @@ Surf Wax,4.99,seasonal,25"
         entry?.suggestedCategory ||
         existingStore?.category ||
         "fashion";
-
-      const defaultLat =
-        existingStore?.lat ??
-        DEFAULT_LOCATION.lat;
-
-      const defaultLng =
-        existingStore?.lng ??
-        DEFAULT_LOCATION.lng;
 
       openModal({
         title:
@@ -7457,16 +7580,14 @@ Surf Wax,4.99,seasonal,25"
 
               <label>
                 Latitude
+                <span class="field-optional">(optional)</span>
               </label>
 
               <input
                 name="lat"
                 type="number"
                 step="0.000001"
-                required
-                value="${escapeHtml(
-                  defaultLat
-                )}"
+                placeholder="Found from address"
               />
 
             </div>
@@ -7475,18 +7596,22 @@ Surf Wax,4.99,seasonal,25"
 
               <label>
                 Longitude
+                <span class="field-optional">(optional)</span>
               </label>
 
               <input
                 name="lng"
                 type="number"
                 step="0.000001"
-                required
-                value="${escapeHtml(
-                  defaultLng
-                )}"
+                placeholder="Found from address"
               />
 
+            </div>
+
+            <div class="field full coordinate-help">
+              Leave both blank to locate the store automatically from its address.
+              Enter both only when you need to place the map marker manually.
+              Address lookup uses OpenStreetMap.
             </div>
 
             <div class="field full">
@@ -7522,7 +7647,7 @@ Surf Wax,4.99,seasonal,25"
           </div>
         `,
 
-        onSubmit(form) {
+        async onSubmit(form) {
           const data =
             new FormData(
               form
@@ -7598,19 +7723,31 @@ Surf Wax,4.99,seasonal,25"
               "pacific-beach"
             );
 
-          const lat =
-            Number(
+          const latValue =
+            String(
               data.get(
                 "lat"
-              )
-            );
+              ) ||
+              ""
+            ).trim();
 
-          const lng =
-            Number(
+          const lngValue =
+            String(
               data.get(
                 "lng"
-              )
-            );
+              ) ||
+              ""
+            ).trim();
+
+          let lat =
+            latValue
+              ? Number(latValue)
+              : NaN;
+
+          let lng =
+            lngValue
+              ? Number(lngValue)
+              : NaN;
 
           const image =
             String(
@@ -7656,12 +7793,101 @@ Surf Wax,4.99,seasonal,25"
           }
 
           if (
-            !Number.isFinite(
-              lat
-            ) ||
-            !Number.isFinite(
-              lng
-            )
+            Boolean(latValue) !==
+            Boolean(lngValue)
+          ) {
+            alert(
+              "Enter both latitude and longitude, or leave both blank to use the store address."
+            );
+
+            return;
+          }
+
+          if (
+            !latValue &&
+            !lngValue
+          ) {
+            const unchangedExistingAddress =
+              existingStore &&
+              address.toLowerCase() ===
+                defaultAddress.toLowerCase() &&
+              Number.isFinite(
+                Number(
+                  existingStore.lat
+                )
+              ) &&
+              Number.isFinite(
+                Number(
+                  existingStore.lng
+                )
+              );
+
+            if (
+              unchangedExistingAddress
+            ) {
+              lat =
+                Number(
+                  existingStore.lat
+                );
+
+              lng =
+                Number(
+                  existingStore.lng
+                );
+            } else {
+              const previousLabel =
+                modalSubmit.textContent;
+
+              modalSubmit.disabled =
+                true;
+
+              modalSubmit.textContent =
+                "Finding address…";
+
+              try {
+                const coordinates =
+                  await geocodeStoreAddress(
+                    address,
+                    marketplaceSlug
+                  );
+
+                if (!coordinates) {
+                  alert(
+                    "We could not locate that address. Check the address or enter latitude and longitude manually."
+                  );
+
+                  return;
+                }
+
+                lat =
+                  coordinates.lat;
+
+                lng =
+                  coordinates.lng;
+              } catch (error) {
+                console.error(
+                  "Store address lookup failed.",
+                  error
+                );
+
+                alert(
+                  "We could not look up that address right now. Please try again or enter latitude and longitude manually."
+                );
+
+                return;
+              } finally {
+                modalSubmit.disabled =
+                  false;
+
+                modalSubmit.textContent =
+                  previousLabel;
+              }
+            }
+          }
+
+          if (
+            !Number.isFinite(lat) ||
+            !Number.isFinite(lng)
           ) {
             alert(
               "Please enter valid latitude and longitude values."
