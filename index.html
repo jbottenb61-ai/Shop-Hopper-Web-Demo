@@ -216,6 +216,33 @@
       margin-top: 7px;
     }
 
+    .image-upload-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .image-upload-option {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #cbdade;
+      border-radius: 9px;
+      background: white;
+    }
+
+    .image-upload-option strong {
+      display: block;
+      color: var(--teal);
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .image-upload-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .image-upload-help {
       margin-top: 7px;
       color: var(--muted);
@@ -2894,7 +2921,7 @@
       if (
         !imageUrlInput ||
         modalBody.querySelector(
-          'input[name="imageFile"]'
+          'input[name="imageCameraFile"], input[name="imageLibraryFile"]'
         )
       ) {
         return;
@@ -2910,21 +2937,42 @@
 
       uploadField.innerHTML = `
         <label>
-          Upload or take photo
+          Item photo
           <span class="field-optional">
             (optional)
           </span>
         </label>
 
-        <input
-          name="imageFile"
-          type="file"
-          accept="image/*"
-        />
+        <div class="image-upload-options">
+          <label class="image-upload-option">
+            <strong>
+              <i class="fa-solid fa-camera"></i>
+              Take Photo
+            </strong>
+            <input
+              name="imageCameraFile"
+              type="file"
+              accept="image/*"
+              capture="environment"
+            />
+          </label>
+
+          <label class="image-upload-option">
+            <strong>
+              <i class="fa-solid fa-images"></i>
+              Choose Existing Photo
+            </strong>
+            <input
+              name="imageLibraryFile"
+              type="file"
+              accept="image/*"
+            />
+          </label>
+        </div>
 
         <div class="image-upload-help">
-          On a phone, choose Camera or Photo Library.
-          An uploaded photo takes priority over the Image URL.
+          Take Photo opens the rear camera on supported phones.
+          Either choice takes priority over the Image URL.
         </div>
 
         <img
@@ -2946,8 +2994,12 @@
       "change",
       event => {
         if (
-          event.target.name !==
-          "imageFile"
+          ![
+            "imageCameraFile",
+            "imageLibraryFile"
+          ].includes(
+            event.target.name
+          )
         ) {
           return;
         }
@@ -3104,9 +3156,16 @@
         }
 
         const imageFile =
-          modalForm.querySelector(
-            'input[name="imageFile"]'
-          )?.files?.[0];
+          [
+            ...modalForm.querySelectorAll(
+              'input[name="imageCameraFile"], input[name="imageLibraryFile"]'
+            )
+          ]
+            .map(
+              input =>
+                input.files?.[0]
+            )
+            .find(Boolean);
 
         const imageUrlInput =
           modalForm.querySelector(
