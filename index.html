@@ -18487,6 +18487,48 @@ if (
       baseScale *
       (state.full ? 1 : state.zoom);
 
+    if (!state.full) {
+      const maxX =
+        Math.max(
+          0,
+          (
+            size.width *
+            scale -
+            canvas.width
+          ) /
+          2
+        );
+
+      const maxY =
+        Math.max(
+          0,
+          (
+            size.height *
+            scale -
+            canvas.height
+          ) /
+          2
+        );
+
+      state.offsetX =
+        Math.max(
+          -maxX,
+          Math.min(
+            maxX,
+            state.offsetX
+          )
+        );
+
+      state.offsetY =
+        Math.max(
+          -maxY,
+          Math.min(
+            maxY,
+            state.offsetY
+          )
+        );
+    }
+
     context.fillStyle =
       "#182327";
 
@@ -18551,6 +18593,16 @@ if (
     if (zoom) {
       zoom.value =
         "1";
+
+      const zoomRow =
+        zoom.closest(
+          ".image-crop-zoom"
+        );
+
+      if (zoomRow) {
+        zoomRow.hidden =
+          false;
+      }
     }
 
     const mode =
