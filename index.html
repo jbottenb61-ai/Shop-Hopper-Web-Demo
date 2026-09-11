@@ -6255,6 +6255,27 @@ Surf Wax,4.99,seasonal,25"
     gap: 10px;
   }
 
+  .hopper-pick-card-clickable {
+    grid-template-columns: 66px minmax(0, 1fr);
+    cursor: pointer;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
+  }
+
+  .hopper-pick-card-clickable:hover {
+    border-color: #9fcbd3;
+    box-shadow: 0 7px 20px rgba(20, 40, 46, 0.10);
+    transform: translateY(-1px);
+  }
+
+  .hopper-pick-card-clickable:focus-visible {
+    outline: 3px solid rgba(19, 165, 197, 0.34);
+    outline-offset: 2px;
+    border-color: var(--cyan);
+  }
+
   .hopper-pick-card {
     min-height: 88px;
 
@@ -7071,7 +7092,18 @@ Surf Wax,4.99,seasonal,25"
         store
       ) {
         return `
-          <article class="hopper-pick-card">
+          <article
+            class="hopper-pick-card hopper-pick-card-clickable"
+            role="button"
+            tabindex="0"
+            data-action="hopper-open-item"
+            data-id="${escapeHtml(
+              item.id
+            )}"
+            aria-label="View ${escapeHtml(
+              entry.itemName
+            )}"
+          >
 
             <img
               class="hopper-pick-image"
@@ -7133,17 +7165,6 @@ Surf Wax,4.99,seasonal,25"
               }
 
             </div>
-
-            <button
-              type="button"
-              class="button button-secondary small-button"
-              data-action="hopper-open-item"
-              data-id="${escapeHtml(
-                item.id
-              )}"
-            >
-              View
-            </button>
 
           </article>
         `;
@@ -16876,6 +16897,16 @@ if (
     }
   }
 </style>
+
+
+<script>
+  document.addEventListener("keydown", event => {
+    const card = event.target.closest?.(".hopper-pick-card-clickable");
+    if (!card || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    card.click();
+  });
+</script>
 
 <!-- Supabase client: pinned for repeatable builds. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
