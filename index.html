@@ -17045,7 +17045,7 @@ if (
     const { error } = await cloudClient.auth.signInWithOtp({
       email: email.trim(),
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: new URL(".", window.location.href).href,
         shouldCreateUser: true
       }
     });
