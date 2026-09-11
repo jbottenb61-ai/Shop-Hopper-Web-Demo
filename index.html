@@ -2107,6 +2107,38 @@
   margin-bottom: 10px;
 }
   </style>
+  <!-- Mobile modal visibility fix: keep dialogs above the fixed bottom navigation. -->
+  <style>
+    .modal-backdrop {
+      z-index: 100000;
+    }
+
+    @media (max-width: 760px) {
+      .modal-backdrop {
+        align-items: flex-start;
+        padding:
+          max(12px, env(safe-area-inset-top, 0px))
+          10px
+          max(12px, env(safe-area-inset-bottom, 0px));
+      }
+
+      .modal {
+        max-height:
+          calc(
+            100dvh -
+            max(12px, env(safe-area-inset-top, 0px)) -
+            max(12px, env(safe-area-inset-bottom, 0px))
+          );
+      }
+
+      .modal-body {
+        min-height: 0;
+        overscroll-behavior: contain;
+        padding-bottom:
+          max(24px, env(safe-area-inset-bottom, 0px));
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="prototype-shell">
