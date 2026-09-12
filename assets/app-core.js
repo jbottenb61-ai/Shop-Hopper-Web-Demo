@@ -2811,10 +2811,16 @@
                   ${escapeHtml(store.description)}
                 </p>
 
-                <p class="merchant-store-address">
-                  <i class="fa-solid fa-location-dot"></i>
-                  ${escapeHtml(store.address)}
-                </p>
+                <button
+                  type="button"
+                  class="merchant-store-address address-map-link"
+                  data-store-map="${escapeHtml(store.id)}"
+                  aria-label="Show ${escapeHtml(store.name)} on the map at ${escapeHtml(store.address)}"
+                >
+                  <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                  <span>${escapeHtml(store.address)}</span>
+                  <i class="fa-solid fa-chevron-right address-map-arrow" aria-hidden="true"></i>
+                </button>
 
               </div>
 
@@ -4280,9 +4286,16 @@ Surf Wax,4.99,seasonal,25"
             ${escapeHtml(store.description)}
           </p>
 
-          <p class="detail-copy">
-            ${escapeHtml(store.address)}
-          </p>
+          <button
+            type="button"
+            class="item-store-link item-store-address-button address-map-link"
+            data-store-map="${escapeHtml(store.id)}"
+            aria-label="Show ${escapeHtml(store.name)} on the map at ${escapeHtml(store.address)}"
+          >
+            <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+            <span>${escapeHtml(store.address)}</span>
+            <i class="fa-solid fa-chevron-right address-map-arrow" aria-hidden="true"></i>
+          </button>
 
           <hr />
 
