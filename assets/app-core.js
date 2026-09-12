@@ -708,6 +708,22 @@
         return;
       }
 
+      const imageKind =
+        imageUrlInput.dataset.imageKind ===
+        "storefront"
+          ? "storefront"
+          : "item";
+
+      const imageLabel =
+        imageKind === "storefront"
+          ? "Storefront photo"
+          : "Item photo";
+
+      const previewAlt =
+        imageKind === "storefront"
+          ? "Selected storefront photo preview"
+          : "Selected item photo preview";
+
       const uploadField =
         document.createElement(
           "div"
@@ -718,7 +734,7 @@
 
       uploadField.innerHTML = `
         <label>
-          Item photo
+          ${imageLabel}
           <span class="field-optional">
             (optional)
           </span>
@@ -765,7 +781,7 @@
 
         <img
           class="image-upload-preview"
-          alt="Selected item photo preview"
+          alt="${previewAlt}"
           hidden
         />
 
@@ -3441,6 +3457,20 @@ Used
             </div>
 
             <div class="field full">
+              <label>
+                Storefront Image URL
+              </label>
+
+              <input
+                name="image"
+                type="url"
+                data-image-kind="storefront"
+                placeholder="https://…"
+                value="${escapeHtml(store?.image || "")}"
+              />
+            </div>
+
+            <div class="field full">
               <p
                 id="storeAddressStatus"
                 class="form-status"
@@ -3580,6 +3610,13 @@ Used
               ),
 
             marketplaceSlug,
+
+            image:
+              String(
+                data.get(
+                  "image"
+                )
+              ).trim(),
 
             lat:
               coordinates.lat,
@@ -4214,6 +4251,26 @@ Surf Wax,4.99,seasonal,25"
                 : "This store is still a draft."
             }
           </div>
+
+          ${store.image
+            ? `
+              <img
+                class="store-preview-photo"
+                src="${escapeHtml(safeUrl(store.image))}"
+                alt="Front of ${escapeHtml(store.name)}"
+              />
+            `
+            : `
+              <div
+                class="store-preview-photo store-preview-photo-placeholder"
+                role="img"
+                aria-label="No storefront photo has been added for ${escapeHtml(store.name)}"
+              >
+                <i class="fa-solid fa-store" aria-hidden="true"></i>
+                <span>Storefront photo coming soon</span>
+              </div>
+            `
+          }
 
           <h2>
             ${escapeHtml(store.name)}
