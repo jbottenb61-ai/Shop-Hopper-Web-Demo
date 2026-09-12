@@ -4653,3 +4653,40 @@ body:not(.testing-mode) .demo-tools-menu {
 .modal:focus {
   outline: none;
 }
+
+
+/* Shop Hopper brand identity */
+.shop-hopper-brand-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  object-fit: contain;
+}
+
+.demo-label .demo-dot {
+  display: none;
+}
+
+.shop-hopper-sign-in-brand {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 14px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #11191a;
+}
+
+.shop-hopper-sign-in-brand img {
+  display: block;
+  width: min(100%, 230px);
+  height: auto;
+}
+
+@media (max-width: 760px) {
+  .shop-hopper-brand-mark {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+}
