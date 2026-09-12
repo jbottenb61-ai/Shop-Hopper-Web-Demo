@@ -189,7 +189,7 @@
         return;
       }
 
-      let selected =
+      const selected =
         records.find(
           record =>
             record.item.id ===
@@ -197,11 +197,17 @@
         );
 
       if (!selected) {
-        selected =
-          records[0];
-
         ui.selectedMapItemId =
-          selected.item.id;
+          null;
+
+        shell.innerHTML = `
+          <div class="map-item-banner-empty map-item-banner-prompt">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            Select a product marker to see its item.
+          </div>
+        `;
+
+        return;
       }
 
       const distance =
@@ -210,13 +216,15 @@
         );
 
       shell.innerHTML = `
-        <button
-          type="button"
-          class="map-item-banner"
-          data-action="map-view-item"
-          data-id="${escapeHtml(selected.item.id)}"
-          aria-label="View ${escapeHtml(selected.item.title)} at ${escapeHtml(selected.store.name)}"
-        >
+        <div class="map-item-banner">
+
+          <button
+            type="button"
+            class="map-item-banner-main"
+            data-action="map-view-item"
+            data-id="${escapeHtml(selected.item.id)}"
+            aria-label="View ${escapeHtml(selected.item.title)} at ${escapeHtml(selected.store.name)}"
+          >
 
           <img
             class="map-item-banner-image"
@@ -258,9 +266,20 @@
 
           </div>
 
-          <i class="fa-solid fa-chevron-right map-item-banner-arrow" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-right map-item-banner-arrow" aria-hidden="true"></i>
 
-        </button>
+          </button>
+
+          <button
+            type="button"
+            class="map-item-banner-close"
+            data-action="map-close-item"
+            aria-label="Close selected item"
+          >
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+
+        </div>
       `;
     }
 
@@ -495,10 +514,21 @@
       event => {
         const button =
           event.target.closest(
-            '[data-action="map-view-item"]'
+            '[data-action="map-view-item"], [data-action="map-close-item"]'
           );
 
         if (!button) {
+          return;
+        }
+
+        if (
+          button.dataset.action ===
+          "map-close-item"
+        ) {
+          ui.selectedMapItemId =
+            null;
+
+          renderMapItemBanner();
           return;
         }
 
