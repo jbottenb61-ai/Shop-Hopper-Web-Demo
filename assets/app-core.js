@@ -2758,30 +2758,36 @@
 
             <div class="merchant-store-switcher">
 
-              <select
-                id="merchantStoreSelect"
-                class="merchant-store-select"
-                aria-label="Current store"
-              >
+              ${stores.length > 1
+                ? `
+<select
+  id="merchantStoreSelect"
+  class="merchant-store-select"
+  aria-label="Current store"
+>
 
-                ${stores
-                  .map(
-                    candidate => `
-                      <option
-                        value="${escapeHtml(candidate.id)}"
-                        ${
-                          candidate.id === store.id
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        ${escapeHtml(candidate.name)}
-                      </option>
-                    `
-                  )
-                  .join("")}
+  ${stores
+    .map(
+      candidate => `
+        <option
+          value="${escapeHtml(candidate.id)}"
+          ${
+            candidate.id === store.id
+              ? "selected"
+              : ""
+          }
+        >
+          ${escapeHtml(candidate.name)}
+        </option>
+      `
+    )
+    .join("")}
 
-              </select>
+</select>
+
+
+                `
+                : ""}
 
               <button
                 type="button"
