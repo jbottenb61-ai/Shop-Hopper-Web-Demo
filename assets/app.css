@@ -712,10 +712,11 @@
     .map-instruction {
       position: absolute;
       top: 20px;
-      left: 0;
-      right: 0;
+      left: 50px;
 
-      margin: 0 2px;
+      width: max-content;
+      max-width: calc(100% - 58px);
+      margin: 0;
       padding: 14px 18px;
 
       border-radius: 14px;
@@ -1902,6 +1903,8 @@
 
 .map-instruction {
   top: 12px;
+  left: 48px;
+  max-width: calc(100% - 56px);
   padding: 11px 14px;
 }
 
