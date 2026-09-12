@@ -4470,6 +4470,9 @@ Surf Wax,4.99,seasonal,25"
             ui.shopperView =
               "map";
 
+            ui.selectedMapItemId =
+              null;
+
             ui.selectedMapMarketplace =
               ui.marketplaceSlug;
 
@@ -4559,6 +4562,9 @@ Surf Wax,4.99,seasonal,25"
           case "select-marketplace":
             ui.selectedMapMarketplace =
               button.dataset.marketplace;
+
+            ui.selectedMapItemId =
+              null;
 
             renderMarketplaces();
             break;
