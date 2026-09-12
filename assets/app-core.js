@@ -3194,6 +3194,118 @@ Used
       });
     }
 
+    async function geocodeMerchantStoreAddress(
+      address,
+      marketplaceSlug
+    ) {
+      const marketplace =
+        MARKETPLACES.find(
+          candidate =>
+            candidate.slug ===
+            marketplaceSlug
+        );
+
+      const hasCityOrState =
+        /,|\b(?:CA|California)\b/i.test(
+          address
+        );
+
+      const query =
+        hasCityOrState
+          ? address
+          : [
+              address,
+              marketplace?.name,
+              "San Diego County",
+              "California"
+            ]
+              .filter(Boolean)
+              .join(", ");
+
+      const url =
+        new URL(
+          "https://nominatim.openstreetmap.org/search"
+        );
+
+      url.searchParams.set(
+        "q",
+        query
+      );
+
+      url.searchParams.set(
+        "format",
+        "jsonv2"
+      );
+
+      url.searchParams.set(
+        "limit",
+        "1"
+      );
+
+      url.searchParams.set(
+        "countrycodes",
+        "us"
+      );
+
+      const controller =
+        new AbortController();
+
+      const timeout =
+        window.setTimeout(
+          () =>
+            controller.abort(),
+          8000
+        );
+
+      try {
+        const response =
+          await fetch(
+            url,
+            {
+              headers: {
+                Accept:
+                  "application/json"
+              },
+              signal:
+                controller.signal
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            "Address lookup is temporarily unavailable."
+          );
+        }
+
+        const match =
+          (
+            await response.json()
+          )?.[0];
+
+        const lat =
+          Number(
+            match?.lat
+          );
+
+        const lng =
+          Number(
+            match?.lon
+          );
+
+        return Number.isFinite(lat) &&
+          Number.isFinite(lng)
+          ? {
+              lat,
+              lng
+            }
+          : null;
+      } finally {
+        window.clearTimeout(
+          timeout
+        );
+      }
+    }
+
     function openStoreForm(
       store = null
     ) {
@@ -3287,40 +3399,122 @@ Used
               </select>
             </div>
 
-            <div class="field">
-              <label>
-                Latitude
-              </label>
-
-              <input
-                name="lat"
-                type="number"
-                step="0.000001"
-                required
-                value="${escapeHtml(store?.lat ?? DEFAULT_LOCATION.lat)}"
-              />
-            </div>
-
-            <div class="field">
-              <label>
-                Longitude
-              </label>
-
-              <input
-                name="lng"
-                type="number"
-                step="0.000001"
-                required
-                value="${escapeHtml(store?.lng ?? DEFAULT_LOCATION.lng)}"
-              />
+            <div class="field full">
+              <p
+                id="storeAddressStatus"
+                class="form-status"
+                role="status"
+                aria-live="polite"
+              >
+                The address will be used to place this store on the map.
+              </p>
             </div>
 
           </div>
         `,
 
-        onSubmit(form) {
+        async onSubmit(form) {
           const data =
             new FormData(form);
+
+          const address =
+            String(
+              data.get(
+                "address"
+              )
+            ).trim();
+
+          const marketplaceSlug =
+            String(
+              data.get(
+                "marketplaceSlug"
+              )
+            );
+
+          const addressChanged =
+            !editing ||
+            address !==
+              store?.address ||
+            marketplaceSlug !==
+              store?.marketplaceSlug;
+
+          let coordinates =
+            editing &&
+            !addressChanged &&
+            Number.isFinite(
+              Number(
+                store?.lat
+              )
+            ) &&
+            Number.isFinite(
+              Number(
+                store?.lng
+              )
+            )
+              ? {
+                  lat:
+                    Number(
+                      store.lat
+                    ),
+                  lng:
+                    Number(
+                      store.lng
+                    )
+                }
+              : null;
+
+          if (!coordinates) {
+            const status =
+              document.getElementById(
+                "storeAddressStatus"
+              );
+
+            modalSubmit.disabled =
+              true;
+
+            if (status) {
+              status.textContent =
+                "Finding this address on the map…";
+            }
+
+            try {
+              coordinates =
+                await geocodeMerchantStoreAddress(
+                  address,
+                  marketplaceSlug
+                );
+            } catch (error) {
+              if (status) {
+                status.textContent =
+                  error.message ||
+                  "The address could not be checked.";
+              }
+
+              announce(
+                "The store address could not be checked.",
+                "assertive"
+              );
+
+              return;
+            } finally {
+              modalSubmit.disabled =
+                false;
+            }
+
+            if (!coordinates) {
+              if (status) {
+                status.textContent =
+                  "We could not find that address. Please include the street, city, state, and ZIP code.";
+              }
+
+              announce(
+                "The store address could not be found.",
+                "assertive"
+              );
+
+              return;
+            }
+          }
 
           const values = {
             name:
@@ -3335,12 +3529,7 @@ Used
                 )
               ).trim(),
 
-            address:
-              String(
-                data.get(
-                  "address"
-                )
-              ).trim(),
+            address,
 
             category:
               normalizeCategory(
@@ -3349,22 +3538,13 @@ Used
                 )
               ),
 
-            marketplaceSlug:
-              String(
-                data.get(
-                  "marketplaceSlug"
-                )
-              ),
+            marketplaceSlug,
 
             lat:
-              Number(
-                data.get("lat")
-              ),
+              coordinates.lat,
 
             lng:
-              Number(
-                data.get("lng")
-              )
+              coordinates.lng
           };
 
           if (
