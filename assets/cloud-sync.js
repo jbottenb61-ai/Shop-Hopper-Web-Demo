@@ -251,6 +251,7 @@
   let cloudReloadTimer = null;
   let cloudSyncTimer = null;
   let cloudKnownIds = null;
+  let cloudBaseState = null;
   let cloudRevision = null;
   const pendingPhotoPaths =
     new Set();
@@ -276,6 +277,31 @@
 
   function difference(before, after) {
     return [...(before || [])].filter(value => !(after || new Set()).has(value));
+  }
+
+  function changedRecords(current, previous) {
+    const previousById = new Map(
+      (previous || []).map(record => [record.id, JSON.stringify(record)])
+    );
+    return (current || []).filter(
+      record => previousById.get(record.id) !== JSON.stringify(record)
+    );
+  }
+
+  function createStateDelta(current, previous) {
+    const delta = {
+      merchants: changedRecords(current.merchants, previous?.merchants),
+      stores: changedRecords(current.stores, previous?.stores),
+      items: changedRecords(current.items, previous?.items),
+      hoppers: changedRecords(current.hoppers, previous?.hoppers),
+      hopperLists: changedRecords(current.hopperLists, previous?.hopperLists)
+    };
+
+    if (JSON.stringify(current.userLocation) !== JSON.stringify(previous?.userLocation)) {
+      delta.userLocation = current.userLocation;
+    }
+
+    return delta;
   }
 
   function setCloudStatus(message, mode = "") {
@@ -725,6 +751,7 @@
 
     state = mapCloudState(results);
     cloudKnownIds = captureIds(state);
+    cloudBaseState = structuredClone(state);
     cloudRevision =
       results[7]?.data?.revision ??
       null;
@@ -746,6 +773,7 @@
 
     try {
       const currentIds = captureIds(state);
+      const payloadDelta = createStateDelta(state, cloudBaseState);
       const removals = [
         ...difference(cloudKnownIds?.hopperEntries, currentIds.hopperEntries).map(id => ({ table: "hopper_list_entries", id })),
         ...difference(cloudKnownIds?.hopperLists, currentIds.hopperLists).map(id => ({ table: "hopper_lists", id })),
@@ -769,7 +797,7 @@
           "sync_app_state",
           {
             payload:
-              state,
+              payloadDelta,
             removals,
             expected_revision:
               cloudRevision
@@ -785,6 +813,11 @@
 
       cloudKnownIds =
         currentIds;
+
+      cloudBaseState =
+        structuredClone(
+          state
+        );
 
       pendingPhotoPaths.clear();
 
