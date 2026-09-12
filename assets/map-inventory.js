@@ -210,7 +210,13 @@
         );
 
       shell.innerHTML = `
-        <div class="map-item-banner">
+        <button
+          type="button"
+          class="map-item-banner"
+          data-action="map-view-item"
+          data-id="${escapeHtml(selected.item.id)}"
+          aria-label="View ${escapeHtml(selected.item.title)} at ${escapeHtml(selected.store.name)}"
+        >
 
           <img
             class="map-item-banner-image"
@@ -252,18 +258,9 @@
 
           </div>
 
-          <button
-            type="button"
-            class="map-item-banner-button"
-            data-action="map-view-item"
-            data-id="${escapeHtml(
-              selected.item.id
-            )}"
-          >
-            View
-          </button>
+          <i class="fa-solid fa-chevron-right map-item-banner-arrow" aria-hidden="true"></i>
 
-        </div>
+        </button>
       `;
     }
 
