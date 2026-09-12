@@ -675,6 +675,7 @@
         address: row.address,
         marketplaceSlug: row.marketplace_slug,
         category: row.category,
+        image: row.image_url,
         lat: row.lat,
         lng: row.lng,
         published: row.published
