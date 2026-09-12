@@ -80,15 +80,15 @@
       storeParagraph.innerHTML = `
         <button
           type="button"
-          class="item-store-map-button"
-          data-store-map="${escapeHtml(
+          class="item-store-link item-store-preview-button"
+          data-store-preview="${escapeHtml(
             store.id
           )}"
-          title="Show ${escapeHtml(
+          aria-label="View ${escapeHtml(
             store.name
-          )} on the map"
+          )} store page"
         >
-          <i class="fa-solid fa-location-dot"></i>
+          <i class="fa-solid fa-store" aria-hidden="true"></i>
 
           <span>
             ${escapeHtml(
@@ -98,6 +98,7 @@
 
           <i
             class="fa-solid fa-chevron-right store-map-arrow"
+            aria-hidden="true"
           ></i>
         </button>
 
@@ -117,6 +118,44 @@
           )}
         </span>
       `;
+
+      const addressParagraph =
+        Array.from(
+          detailGrid.querySelectorAll(
+            ".detail-copy"
+          )
+        ).find(
+          element =>
+            element !==
+              storeParagraph &&
+            element.textContent
+              .trim() ===
+            store.address.trim()
+        );
+
+      if (addressParagraph) {
+        addressParagraph.innerHTML = `
+          <button
+            type="button"
+            class="item-store-link item-store-address-button"
+            data-store-map="${escapeHtml(
+              store.id
+            )}"
+            aria-label="Show ${escapeHtml(
+              store.name
+            )} on the map at ${escapeHtml(
+              store.address
+            )}"
+          >
+            <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+            <span>${escapeHtml(store.address)}</span>
+            <i
+              class="fa-solid fa-chevron-right store-map-arrow"
+              aria-hidden="true"
+            ></i>
+          </button>
+        `;
+      }
     };
 
   /* ============================================================
@@ -316,8 +355,26 @@
   }
 
   /* ============================================================
-     STORE CLICK
+     STORE AND MAP CLICKS
      ============================================================ */
+
+  document.addEventListener(
+    "click",
+    event => {
+      const button =
+        event.target.closest(
+          "[data-store-preview]"
+        );
+
+      if (!button) {
+        return;
+      }
+
+      openStorePreview(
+        button.dataset.storePreview
+      );
+    }
+  );
 
   document.addEventListener(
     "click",
