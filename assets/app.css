@@ -4634,10 +4634,16 @@
   font-size: 12px;
 }
 
-body:not(.testing-mode) .demo-label,
-body:not(.testing-mode) .persona-select,
 body:not(.testing-mode) .demo-tools-menu {
   display: none !important;
+}
+
+/*
+ * The view selector is primary app navigation—not a testing control.
+ * Keep Shopper, Hopper, and Merchant views available in every mode.
+ */
+.persona-select {
+  display: block !important;
 }
 
 #testingModeButton[hidden] {
