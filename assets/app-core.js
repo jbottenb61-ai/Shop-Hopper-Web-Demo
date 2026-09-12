@@ -2394,10 +2394,9 @@
                 ${favorites
                   .map(
                     item => `
-                      <img
-                        src="${escapeHtml(safeUrl(item.image))}"
-                        alt="${escapeHtml(item.title)}"
-                      />
+                      <button type="button" class="favorite-item-button item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.title)} details">
+                        <img src="${escapeHtml(safeUrl(item.image))}" alt="${escapeHtml(item.title)}" />
+                      </button>
                     `
                   )
                   .join("")}
@@ -3011,17 +3010,15 @@ Used
       return `
         <article class="inventory-row">
 
-          <img
-            class="inventory-image"
-            src="${escapeHtml(safeUrl(item.image))}"
-            alt="${escapeHtml(item.title)}"
-          />
+          <button type="button" class="inventory-item-image-button item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.title)} details">
+            <img class="inventory-image" src="${escapeHtml(safeUrl(item.image))}" alt="${escapeHtml(item.title)}" />
+          </button>
 
           <div class="inventory-main">
 
-            <strong>
+            <button type="button" class="inventory-item-title item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}">
               ${escapeHtml(item.title)}
-            </strong>
+            </button>
 
             <div class="inventory-meta">
               <span>
@@ -4308,13 +4305,11 @@ Surf Wax,4.99,seasonal,25"
           ${items
             .map(
               item => `
-                <p>
-                  <strong>
-                    ${escapeHtml(item.title)}
-                  </strong>
-                  —
-                  ${money(item.priceCents)}
-                </p>
+                <button type="button" class="store-preview-item item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.title)} details">
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <span>— ${money(item.priceCents)}</span>
+                  <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </button>
               `
             )
             .join("")}
