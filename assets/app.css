@@ -1586,6 +1586,34 @@
       margin: 0 0 6px;
     }
 
+    .store-preview-photo {
+      display: block;
+      width: 100%;
+      height: clamp(190px, 34vw, 320px);
+      margin: 0 0 18px;
+
+      border-radius: 14px;
+      object-fit: cover;
+      object-position: center;
+      background: #edf3f4;
+    }
+
+    .store-preview-photo-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      color: #587078;
+      border: 1px dashed #b8c9cd;
+      font-weight: 700;
+    }
+
+    .store-preview-photo-placeholder i {
+      font-size: 34px;
+    }
+
     .detail-price {
       color: #075966;
 
