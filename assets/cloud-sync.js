@@ -247,6 +247,24 @@
 
   let cloudReady = false;
   let cloudCanEdit = false;
+  let cloudViewer = {
+    signedIn: false,
+    canEdit: false,
+    email: ""
+  };
+
+  window.shopHopperGetViewer =
+    function getShopHopperViewer() {
+      return { ...cloudViewer };
+    };
+
+  function refreshViewerDependentUI() {
+    if (document.querySelector(".profile-page")) {
+      renderAll();
+      return;
+    }
+    applyEditorUI();
+  }
   let cloudSyncing = false;
   let cloudReloadTimer = null;
   let cloudSyncTimer = null;
@@ -470,8 +488,9 @@
 
     if (!session) {
       cloudCanEdit = false;
+      cloudViewer = { signedIn: false, canEdit: false, email: "" };
       if (button) button.textContent = "Team sign in";
-      applyEditorUI();
+      refreshViewerDependentUI();
       return;
     }
 
@@ -482,8 +501,13 @@
       .maybeSingle();
 
     cloudCanEdit = !error && Boolean(data);
+    cloudViewer = {
+      signedIn: true,
+      canEdit: cloudCanEdit,
+      email: session.user.email || ""
+    };
     if (button) button.textContent = cloudCanEdit ? "Editor signed in" : "Sign out";
-    applyEditorUI();
+    refreshViewerDependentUI();
   }
 
   async function handleAuthClick() {
@@ -498,6 +522,7 @@
       await cloudClient.auth.signOut();
       cloudCanEdit =
         false;
+      cloudViewer = { signedIn: false, canEdit: false, email: "" };
 
       document.getElementById(
         "cloudAuthButton"
