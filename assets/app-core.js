@@ -2611,6 +2611,41 @@
       `;
     }
 
+    function merchantAccountSwitcher(
+      merchant
+    ) {
+      return `
+        <div class="merchant-account-switcher">
+          <label for="merchantAccountSelect">
+            Merchant account
+          </label>
+
+          <select
+            id="merchantAccountSelect"
+            class="merchant-account-select"
+            aria-label="Merchant account"
+          >
+            ${state.merchants
+              .map(
+                candidate => `
+                  <option
+                    value="${escapeHtml(candidate.id)}"
+                    ${
+                      candidate.id === merchant.id
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    ${escapeHtml(candidate.businessName)}
+                  </option>
+                `
+              )
+              .join("")}
+          </select>
+        </div>
+      `;
+    }
+
     function renderMerchantNoStores(
       merchant
     ) {
@@ -2618,6 +2653,10 @@
         <section class="merchant-page">
 
           ${merchantHeader()}
+
+          <div class="merchant-content">
+            ${merchantAccountSwitcher(merchant)}
+          </div>
 
           <div class="merchant-empty">
 
@@ -2698,6 +2737,8 @@
           ${merchantHeader()}
 
           <div class="merchant-content">
+
+            ${merchantAccountSwitcher(merchant)}
 
             <div class="merchant-store-switcher">
 
@@ -4227,6 +4268,29 @@ Surf Wax,4.99,seasonal,25"
     document.addEventListener(
       "change",
       event => {
+        if (
+          event.target.id ===
+          "merchantAccountSelect"
+        ) {
+          ui.selectedMerchantId =
+            event.target.value;
+
+          const stores =
+            getMerchantStores(
+              ui.selectedMerchantId
+            );
+
+          ui.merchantStoreId =
+            stores[0]?.id ||
+            null;
+
+          ui.inventoryTab =
+            "active";
+
+          renderAll();
+          return;
+        }
+
         if (
           event.target.id ===
           "merchantStoreSelect"
