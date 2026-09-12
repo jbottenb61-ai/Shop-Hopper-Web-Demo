@@ -1040,6 +1040,35 @@
       padding: 14px 5px 35px;
     }
 
+    .merchant-account-switcher {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .merchant-account-switcher label {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .merchant-account-select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #9eb0b5;
+      border-radius: 10px;
+      padding: 0 12px;
+      background: white;
+      color: #263034;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .merchant-account-select:focus-visible {
+      outline: 3px solid rgba(32, 177, 216, 0.35);
+      outline-offset: 2px;
+    }
+
     .merchant-store-switcher {
       display: flex;
       align-items: center;
