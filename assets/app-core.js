@@ -1923,7 +1923,7 @@
             <div class="map-instruction">
               <i class="fa-solid fa-circle-info"></i>
               &nbsp;
-              Tap anywhere on the map to search for marketplaces near that area.
+              Tap the map to search this area.
             </div>
 
             <div class="marketplace-strip">
