@@ -1185,7 +1185,7 @@
             <div class="field full">
 
               <label>
-                Image URL
+                Item Image URL
               </label>
 
               <input
@@ -1193,6 +1193,59 @@
                 type="url"
                 placeholder="https://..."
               />
+
+            </div>
+
+            <div class="field full storefront-photo-field">
+
+              <label>
+                Storefront Photo
+                <span class="field-optional">(optional)</span>
+              </label>
+
+              <input
+                name="storefrontImage"
+                type="url"
+                placeholder="Storefront image URL"
+                value="${escapeHtml(existingStore?.image || "")}"
+              />
+
+              <div class="image-upload-options">
+                ${supportsDirectMobileCamera()
+                  ? `
+                    <label class="image-upload-option">
+                      <strong>
+                        <i class="fa-solid fa-camera" aria-hidden="true"></i>
+                        Take Storefront Photo
+                      </strong>
+                      <input
+                        name="storefrontCameraFile"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                      />
+                    </label>
+                  `
+                  : ""
+                }
+
+                <label class="image-upload-option">
+                  <strong>
+                    <i class="fa-solid fa-images" aria-hidden="true"></i>
+                    Choose Storefront Photo
+                  </strong>
+                  <input
+                    name="storefrontLibraryFile"
+                    type="file"
+                    accept="image/*"
+                  />
+                </label>
+              </div>
+
+              <p class="image-upload-help">
+                This photo will appear at the top of Store Preview.
+                A newly selected photo takes priority over the URL.
+              </p>
 
             </div>
 
@@ -1325,6 +1378,73 @@
               ""
             ).trim() ||
             PRODUCT_PLACEHOLDER;
+
+          let storefrontImage =
+            String(
+              data.get(
+                "storefrontImage"
+              ) ||
+              ""
+            ).trim();
+
+          const storefrontFile =
+            [
+              ...form.querySelectorAll(
+                'input[name="storefrontCameraFile"], input[name="storefrontLibraryFile"]'
+              )
+            ]
+              .map(
+                input =>
+                  input.files?.[0]
+              )
+              .find(Boolean);
+
+          if (storefrontFile) {
+            if (
+              typeof window.shopHopperUploadImage !==
+              "function"
+            ) {
+              alert(
+                "Storefront photo uploading is not ready yet. Please wait a moment and try again."
+              );
+
+              return;
+            }
+
+            const previousLabel =
+              modalSubmit.textContent;
+
+            modalSubmit.disabled =
+              true;
+
+            modalSubmit.textContent =
+              "Uploading storefront photo…";
+
+            try {
+              storefrontImage =
+                await window.shopHopperUploadImage(
+                  storefrontFile
+                );
+            } catch (error) {
+              console.error(
+                "Storefront photo upload failed.",
+                error
+              );
+
+              alert(
+                error.message ||
+                "The storefront photo could not be uploaded."
+              );
+
+              return;
+            } finally {
+              modalSubmit.disabled =
+                false;
+
+              modalSubmit.textContent =
+                previousLabel;
+            }
+          }
 
           const hopperNote =
             String(
@@ -1564,6 +1684,9 @@
 
               category,
 
+              image:
+                storefrontImage,
+
               lat,
 
               lng,
@@ -1581,6 +1704,11 @@
 
             store.marketplaceSlug =
               marketplaceSlug;
+
+            if (storefrontImage) {
+              store.image =
+                storefrontImage;
+            }
 
             store.lat =
               lat;
