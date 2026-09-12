@@ -594,8 +594,7 @@
                     ".",
                     window.location.href
                   ).href,
-                shouldCreateUser:
-                  true
+                shouldCreateUser: false
               }
             });
 
