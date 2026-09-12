@@ -695,6 +695,20 @@
       height: 100%;
     }
 
+    .map-loading-status {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      z-index: 500;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--teal);
+      box-shadow: 0 3px 14px rgba(20, 40, 46, 0.2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     .map-instruction {
       position: absolute;
       top: 20px;
@@ -826,7 +840,7 @@
       display: grid;
       place-items: center;
 
-      color: white;
+      color: var(--teal);
       background: #fff8ff;
 
       font-size: 22px;
@@ -967,16 +981,37 @@
     }
 
     .favorite-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 8px;
+    }
+
+    .favorite-item-button {
       overflow: hidden;
+      text-align: left;
+      background: white !important;
+      box-shadow: 0 2px 8px rgba(28, 55, 62, 0.1);
     }
 
     .favorite-row img {
-      width: 220px;
+      width: 100%;
       height: 120px;
 
       object-fit: cover;
+    }
+
+    .favorite-item-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 10px 10px;
+      color: #26363b;
+      font-size: 12px;
+    }
+
+    .favorite-item-label > span {
+      color: var(--teal);
+      font-weight: 850;
     }
 
     .followed-stores {
@@ -995,6 +1030,14 @@
 
       font-size: 11px;
       font-weight: 700;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .followed-store-chip:hover,
+    .followed-store-chip:focus-visible {
+      background: #d9edef;
+      text-decoration: underline;
     }
 
     /* ============================================================
@@ -1112,6 +1155,14 @@
       background: #dbe3e4;
     }
 
+    .merchant-store-logo-placeholder {
+      display: grid;
+      place-items: center;
+      color: #587078;
+      border: 1px dashed #b8c9cd;
+      font-size: 26px;
+    }
+
     .merchant-store-info h2 {
       margin: 0 0 7px;
 
@@ -1206,7 +1257,7 @@
       margin-top: 18px;
 
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
     }
 
@@ -1608,6 +1659,7 @@
       color: #587078;
       border: 1px dashed #b8c9cd;
       font-weight: 700;
+      height: clamp(120px, 20vw, 180px);
     }
 
     .store-preview-photo-placeholder i {
@@ -2598,6 +2650,7 @@
     min-height: 76px;
 
     display: grid;
+    width: 100%;
     grid-template-columns: 62px minmax(0, 1fr) auto;
     align-items: center;
     gap: 10px;
@@ -2611,6 +2664,17 @@
 
     box-shadow:
       0 4px 15px rgba(20, 40, 46, 0.18);
+
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .map-item-banner:hover,
+  .map-item-banner:focus-visible {
+    border-color: var(--cyan);
+    box-shadow: 0 5px 18px rgba(20, 40, 46, 0.25);
   }
 
   .map-item-banner-image {
@@ -2659,19 +2723,9 @@
     font-weight: 850;
   }
 
-  .map-item-banner-button {
-    min-width: 58px;
-
-    padding: 8px 9px;
-
-    border: 1px solid #d2dfe2;
-    border-radius: 9px;
-
-    background: #eef6f7;
+  .map-item-banner-arrow {
     color: var(--teal);
-
-    font-size: 11px;
-    font-weight: 850;
+    padding: 10px;
   }
 
   .map-item-banner-empty {
