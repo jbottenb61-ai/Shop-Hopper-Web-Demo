@@ -193,29 +193,17 @@
                 class="hopper-catalog-result"
               >
 
-                <img
-                  class="hopper-catalog-image"
-                  src="${escapeHtml(
-                    safeUrl(
-                      item.image
-                    )
-                  )}"
-                  alt="${escapeHtml(
-                    item.title
-                  )}"
-                />
+                <button type="button" class="hopper-catalog-image-button item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.title)} details">
+                  <img class="hopper-catalog-image" src="${escapeHtml(safeUrl(item.image))}" alt="${escapeHtml(item.title)}" />
+                </button>
 
                 <div
                   class="hopper-catalog-copy"
                 >
 
-                  <div
-                    class="hopper-catalog-title"
-                  >
-                    ${escapeHtml(
-                      item.title
-                    )}
-                  </div>
+                  <button type="button" class="hopper-catalog-title item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}">
+                    ${escapeHtml(item.title)}
+                  </button>
 
                   <div
                     class="hopper-catalog-store"
