@@ -1360,6 +1360,21 @@
           ui.shopperView =
             "home";
         } else if (
+          value.startsWith(
+            "hopper:"
+          )
+        ) {
+          ui.persona =
+            "hopper";
+
+          ui.selectedHopperId =
+            value.slice(
+              "hopper:".length
+            );
+
+          ui.shopperView =
+            "home";
+        } else if (
           value === "admin"
         ) {
           ui.persona =
@@ -1897,7 +1912,13 @@
 
             <div
               id="marketplaceMap"
+              aria-busy="true"
             ></div>
+
+            <div class="map-loading-status" role="status">
+              <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+              Loading map…
+            </div>
 
             <div class="map-instruction">
               <i class="fa-solid fa-circle-info"></i>
@@ -2110,6 +2131,9 @@
           marketplace
         );
 
+        mapElement.setAttribute("aria-busy", "false");
+        document.querySelector(".map-loading-status")?.remove();
+
         return;
       }
 
@@ -2117,6 +2141,9 @@
         mapElement,
         marketplace
       );
+
+      mapElement.setAttribute("aria-busy", "false");
+      document.querySelector(".map-loading-status")?.remove();
     }
 
     function initializeGoogleMap(
@@ -2310,6 +2337,22 @@
     // ============================================================
 
     function renderProfile() {
+      const viewer =
+        typeof window.shopHopperGetViewer === "function"
+          ? window.shopHopperGetViewer()
+          : { signedIn: false, canEdit: false, email: "" };
+
+      const viewerName = viewer.canEdit
+        ? "Shop Hopper Team Editor"
+        : "Guest Shopper";
+      const viewerDetail = viewer.canEdit
+        ? viewer.email || "Approved team account"
+        : "Browsing shared finds in view-only mode";
+      const viewerBadge = viewer.canEdit
+        ? "Approved Editor"
+        : "Guest · View Only";
+      const viewerInitials = viewer.canEdit ? "SH" : "GS";
+
       const favorites =
         state.items.slice(
           0,
@@ -2334,26 +2377,26 @@
             <section class="profile-section profile-user-card">
 
               <div class="profile-avatar">
-                DE
+                ${viewerInitials}
               </div>
 
               <div>
                 <h2>
-                  Demo Customer
+                  ${escapeHtml(viewerName)}
                 </h2>
 
                 <p>
-                  customer@shophopper.com
+                  ${escapeHtml(viewerDetail)}
                 </p>
 
                 <span class="business-badge">
-                  Business Account
+                  ${escapeHtml(viewerBadge)}
                 </span>
               </div>
 
             </section>
 
-            <section class="merchant-center">
+            ${viewer.canEdit ? `<section class="merchant-center">
 
               <div class="merchant-center-heading">
                 <i class="fa-solid fa-store"></i>
@@ -2374,7 +2417,7 @@
                 ENTER MERCHANT PORTAL
               </button>
 
-            </section>
+            </section>` : ""}
 
             <section class="profile-section">
 
@@ -2396,6 +2439,10 @@
                     item => `
                       <button type="button" class="favorite-item-button item-detail-trigger" data-action="view-item" data-id="${escapeHtml(item.id)}" aria-label="View ${escapeHtml(item.title)} details">
                         <img src="${escapeHtml(safeUrl(item.image))}" alt="${escapeHtml(item.title)}" />
+                        <span class="favorite-item-label">
+                          <strong>${escapeHtml(item.title)}</strong>
+                          <span>${money(item.priceCents)}</span>
+                        </span>
                       </button>
                     `
                   )
@@ -2423,9 +2470,9 @@
                 ${followed
                   .map(
                     store => `
-                      <span class="followed-store-chip">
+                      <button type="button" class="followed-store-chip" data-action="preview-store" data-id="${escapeHtml(store.id)}" aria-label="View ${escapeHtml(store.name)} store">
                         ${escapeHtml(store.name)}
-                      </span>
+                      </button>
                     `
                   )
                   .join("")}
@@ -2730,10 +2777,9 @@
           : inactiveItems;
 
       const storeImage =
-        safeUrl(
-          allItems[0]?.image ||
-          PRODUCT_PLACEHOLDER
-        );
+        store.image
+          ? safeUrl(store.image)
+          : "";
 
       const usagePercent =
         Math.min(
@@ -2800,11 +2846,9 @@
 
             <article class="app-card merchant-store-card">
 
-              <img
-                class="merchant-store-logo"
-                src="${escapeHtml(storeImage)}"
-                alt="${escapeHtml(store.name)}"
-              />
+              ${storeImage
+                ? `<img class="merchant-store-logo" src="${escapeHtml(storeImage)}" alt="Storefront of ${escapeHtml(store.name)}" />`
+                : `<div class="merchant-store-logo merchant-store-logo-placeholder" role="img" aria-label="No storefront photo has been added for ${escapeHtml(store.name)}"><i class="fa-solid fa-store" aria-hidden="true"></i></div>`}
 
               <div class="merchant-store-info">
 
@@ -3390,7 +3434,7 @@ Used
             : "Create Store",
 
         body: `
-          <div class="notice">
+          <div class="notice" data-editor-only="true">
             ${
               editing
                 ? "Update the store details shoppers will see."
@@ -4253,7 +4297,7 @@ Surf Wax,4.99,seasonal,25"
           null,
 
         body: `
-          <div class="notice">
+          <div class="notice" data-editor-only="true">
             ${
               store.published
                 ? "This store is currently published."
@@ -4778,4 +4822,3 @@ Surf Wax,4.99,seasonal,25"
     // ============================================================
 
     renderAll();
-  
