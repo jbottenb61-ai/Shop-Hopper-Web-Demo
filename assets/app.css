@@ -2774,31 +2774,48 @@
 
 
 
-  .item-store-map-button {
+  .item-store-link {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    max-width: 100%;
 
     margin: 0 0 4px;
-    padding: 4px 0;
+    padding: 6px 0;
 
     border: 0;
     background: transparent;
 
     color: var(--teal);
 
+    font: inherit;
     font-size: 13px;
     font-weight: 900;
+    text-align: left;
 
     cursor: pointer;
   }
 
-  .item-store-map-button:hover {
+  .item-store-link:hover,
+  .item-store-link:focus-visible {
     color: var(--cyan);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
-  .item-store-map-button .store-map-arrow {
+  .item-store-link .store-map-arrow {
+    flex: 0 0 auto;
     font-size: 10px;
+  }
+
+  .item-store-address-button {
+    color: #667478;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .item-store-address-button span {
+    overflow-wrap: anywhere;
   }
 
   .item-store-map-meta {
