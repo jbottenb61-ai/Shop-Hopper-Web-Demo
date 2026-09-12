@@ -4764,3 +4764,40 @@ body:not(.testing-mode) .demo-tools-menu {
     flex-basis: 28px;
   }
 }
+
+
+  /* Consistent address-to-map affordance across item, store, and merchant views. */
+  .address-map-link {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+  }
+
+  .address-map-link:hover,
+  .address-map-link:focus-visible {
+    color: var(--cyan) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .address-map-link .address-map-arrow {
+    flex: 0 0 auto;
+    margin-left: 2px;
+    font-size: 10px;
+  }
+
+  .merchant-store-address.address-map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    margin: 0;
+    padding: 6px 0;
+  }
+
+  .merchant-store-address.address-map-link span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
