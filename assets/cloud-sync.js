@@ -494,6 +494,16 @@
       return;
     }
 
+    const { error: claimError } = await cloudClient
+      .rpc("claim_preapproved_editor_access");
+
+    if (claimError) {
+      console.warn(
+        "Automatic editor access could not be checked.",
+        claimError
+      );
+    }
+
     const { data, error } = await cloudClient
       .from("app_editors")
       .select("user_id")
@@ -557,7 +567,7 @@
           />
         </div>
         <div class="notice">
-          Use an approved Shop Hopper team email. We will send a secure magic link.
+          Enter your email to receive a secure sign-in link. If it is on the approved editor list, editing turns on automatically after you open the link.
         </div>
         <div class="field">
           <label for="teamSignInEmail">Email address</label>
@@ -619,7 +629,7 @@
                     ".",
                     window.location.href
                   ).href,
-                shouldCreateUser: false
+                shouldCreateUser: true
               }
             });
 
