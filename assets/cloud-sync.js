@@ -520,6 +520,53 @@
     refreshViewerDependentUI();
   }
 
+  function clearEditorInvitationParameter() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("editor");
+    window.history.replaceState({}, "", url);
+  }
+
+  async function followEditorInvitation() {
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("editor") !== "signin") {
+      return false;
+    }
+
+    const {
+      data: { session }
+    } = await cloudClient.auth.getSession();
+
+    if (session) {
+      clearEditorInvitationParameter();
+      return false;
+    }
+
+    const redirectUrl = new URL(".", window.location.href);
+    redirectUrl.searchParams.delete("editor");
+
+    setCloudStatus("Opening Google sign in…");
+
+    const { error } = await cloudClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: redirectUrl.href,
+        queryParams: {
+          prompt: "select_account"
+        }
+      }
+    });
+
+    if (error) {
+      clearEditorInvitationParameter();
+      setCloudStatus("Google sign in is unavailable", "error");
+      announce("Google sign in could not be opened.", "assertive");
+      return false;
+    }
+
+    return true;
+  }
+
   async function handleAuthClick() {
     const {
       data: {
@@ -970,6 +1017,11 @@
     installCloudControls();
     installEditorAwareRendering();
     applyEditorUI();
+
+    if (await followEditorInvitation()) {
+      return;
+    }
+
     await refreshEditorStatus();
     await loadCloudState();
     subscribeToCloudChanges();
