@@ -393,7 +393,7 @@
 
     const primary = document.createElement("div");
     primary.className = "demo-primary-tools";
-    [label, select, help].forEach(node => node && primary.appendChild(node));
+    [label, select, help, persona].forEach(node => node && primary.appendChild(node));
 
     const menu = document.createElement("details");
     menu.className = "demo-tools-menu";
@@ -402,7 +402,7 @@
     summary.setAttribute("aria-label", "Open Shop Hopper tools");
     const panel = document.createElement("div");
     panel.className = "demo-tools-panel";
-    [persona, dataTools].forEach(node => node && panel.appendChild(node));
+    [dataTools].forEach(node => node && panel.appendChild(node));
     menu.append(summary, panel);
     primary.appendChild(menu);
 
